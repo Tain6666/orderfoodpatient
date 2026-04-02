@@ -60,9 +60,9 @@
       <div class="mb-3">
         <label class="form-label fw-bold"><span class="text-th">ศาสนาผู้ป่วย</span><span class="text-en">Patient Religion</span></label>
         <select class="form-select form-select-lg" id="religion">
+          <option value="คริสต์" data-en="Christianity">คริสต์ (Christianity)</option>
           <option value="พุทธ" data-en="Buddhism">พุทธ (Buddhism)</option>
           <option value="อิสลาม" data-en="Islam">อิสลาม (Islam)</option>
-          <option value="คริสต์" data-en="Christianity">คริสต์ (Christianity)</option>
           <option value="อื่นๆ/ไม่ระบุ" data-en="Other/None">อื่นๆ/ไม่ระบุ (Other/None)</option>
         </select>
       </div>
@@ -192,7 +192,7 @@
   let systemDietType = ""; // เก็บค่าประเภทอาหารที่ได้จากหลังบ้าน
 
   window.onload = function() {
-    // 1. ดึง URL Parameters ?room=...
+    // 1. ดึงหมายเลขห้องจาก URL ?room=...
     const urlParams = new URLSearchParams(window.location.search);
     urlRoom = urlParams.get('room');
     
@@ -200,25 +200,35 @@
       document.getElementById('displayRoomStep1').innerText = "ไม่พบหมายเลขห้องในลิงก์";
       document.getElementById('displayRoomStep1').classList.add('text-danger');
       document.getElementById('btnCheck').disabled = true;
-      Swal.fire('ข้อผิดพลาด', 'รูปแบบลิงก์ไม่ถูกต้อง กรุณาสแกน QR Code ใหม่อีกครั้ง', 'error');
+      Swal.fire({
+        icon: 'error',
+        title: 'ไม่พบหมายเลขห้อง',
+        text: 'กรุณาสแกน QR Code ประจำห้องใหม่อีกครั้ง หรือติดต่อเจ้าหน้าที่',
+        confirmButtonText: 'ตกลง'
+      });
     } else {
       document.getElementById('displayRoomStep1').innerText = urlRoom;
     }
 
-    // 2. จัดการวันที่ (เหมือนเดิม)
+    // 2. จัดการตัวเลือกวันที่ (ปรับให้ "พรุ่งนี้" ขึ้นก่อน)
     const dateSelect = document.getElementById('orderDate');
     const today = new Date();
-    const currentHour = today.getHours();
-    
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + 1);
+    
+    // ใช้รูปแบบ ค.ศ. (DD/MM/YYYY)
     const formatDate = (d) => d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
     
     dateSelect.innerHTML = ''; 
+    
+    // --- สลับตำแหน่ง: เอา "พรุ่งนี้" ขึ้นก่อนเป็นลำดับที่ 1 ---
+    dateSelect.innerHTML += `<option value="${formatDate(tomorrow)}" data-istoday="false">พรุ่งนี้ (Tomorrow) - ${formatDate(tomorrow)}</option>`;
+
+    // --- ตรวจสอบเวลา: ถ้ายังไม่ถึง 17:00 น. ให้แสดงตัวเลือก "วันนี้" เป็นลำดับที่ 2 ---
+    const currentHour = today.getHours();
     if(currentHour < 17) {
         dateSelect.innerHTML += `<option value="${formatDate(today)}" data-istoday="true">วันนี้ (Today) - ${formatDate(today)}</option>`;
     }
-    dateSelect.innerHTML += `<option value="${formatDate(tomorrow)}" data-istoday="false">พรุ่งนี้ (Tomorrow) - ${formatDate(tomorrow)}</option>`;
   };
 
   // ฟังก์ชันสื่อสารกับ Google Apps Script
