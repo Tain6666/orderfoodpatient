@@ -387,7 +387,7 @@
     let dinnerHtml = `<h6 class="text-primary fw-bold"><span class="text-th">${menuData.dinner}</span><span class="text-en">${menuData.dinner_en || ''}</span></h6>`;
     if(menuData.dinner_img) dinnerHtml += `<img src="${menuData.dinner_img.trim()}" style="max-height:150px; border-radius:10px;" class="mb-3 w-100 object-fit-cover">`;
     if (menuData.dinner_sides && menuData.dinner_sides.length > 0 && menuData.dinner_sides[0] !== "") {
-        dinnerHtml += `<p class="mt-2 fw-bold text-success"><span class="text-th">เลือกกับข้าว (เลือกได้สูงสุด 3 อย่างจาก 6 อย่าง)</span><span class="text-en">Choose side dishes (Max 3 of 6)</span></p>`;
+        dinnerHtml += `<p class="mt-2 fw-bold text-success"><span class="text-th">เลือกกับข้าว (เลือกได้สูงสุด 3 อย่าง)</span><span class="text-en">Choose side dishes (Max 3)</span></p>`;
         menuData.dinner_sides.forEach((item, index) => {
             let en_item = menuData.dinner_sides_en[index] || item; 
             if(item.trim() !== "") {
